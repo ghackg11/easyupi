@@ -51,21 +51,23 @@ class MyHomePage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: lightBlack,
         body: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              HomePageSection1(),
-              SizedBox(
-                height: 20,
-              ),
-              HomePageSection2(),
-              SizedBox(
-                height: 20,
-              ),
-              HomePageSection3()
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                HomePageSection1(),
+                SizedBox(
+                  height: 20,
+                ),
+                HomePageSection2(),
+                SizedBox(
+                  height: 20,
+                ),
+                HomePageSection3()
+              ],
+            ),
           ),
         ),
         appBar: AppBar(

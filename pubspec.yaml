@@ -38,6 +38,8 @@ dependencies:
   font_awesome_flutter:
   line_icons:
   get:
+  contacts_service: ^0.6.3
+  permission_handler:
 
 dev_dependencies:
   flutter_test:
