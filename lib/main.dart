@@ -9,6 +9,7 @@ import 'package:line_icons/line_icons.dart';
 
 import 'Components/home_page_section1.dart';
 import 'Components/home_page_section2.dart';
+import 'Components/home_page_section3.dart';
 
 void main() {
   runApp(const MyApp());
@@ -59,7 +60,11 @@ class MyHomePage extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              HomePageSection2()
+              HomePageSection2(),
+              SizedBox(
+                height: 20,
+              ),
+              HomePageSection3()
             ],
           ),
         ),
