@@ -40,6 +40,7 @@ dependencies:
   get:
   contacts_service: ^0.6.3
   permission_handler:
+  upi_pay:
 
 dev_dependencies:
   flutter_test:

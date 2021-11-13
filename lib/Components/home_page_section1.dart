@@ -1,3 +1,4 @@
+import 'package:easyupi/Screens/amount_entering_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -54,7 +55,7 @@ Row HomePageSection1() {
                           snackPosition: SnackPosition.TOP);
                     } else {
                       Get.dialog(AlertDialog(
-                        backgroundColor: Colors.white.withOpacity(0.2),
+                        backgroundColor: Colors.black.withOpacity(0.5),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         title: Text(
@@ -82,6 +83,7 @@ Row HomePageSection1() {
                           }, child: Text('Cancel', style: GoogleFonts.montserrat(color: yellow),),),
                           TextButton(onPressed: (){
                             Get.back();
+                            Get.to(AmountEnteringScreen(val));
                           }, child: Text('Confirm', style: GoogleFonts.montserrat(color: yellow),))
                         ],
                       ));
