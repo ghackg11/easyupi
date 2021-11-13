@@ -1,5 +1,6 @@
 
 import 'package:contacts_service/contacts_service.dart';
+import 'package:easyupi/Screens/amount_entering_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -60,7 +61,7 @@ Row HomePageSection3() {
                     itemBuilder: (context, index){
                       return ListTile(
                         onTap: (){
-
+                          Get.to(AmountEnteringScreen(docs[index].phones![0].value.toString()));
                         },
                         title: Text('${docs[index].displayName}', style: GoogleFonts.montserrat(color: Colors.white),),
                         leading: CircleAvatar(

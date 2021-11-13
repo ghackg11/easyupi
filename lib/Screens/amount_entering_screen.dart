@@ -142,7 +142,7 @@ class AmountEnteringScreen extends StatelessWidget {
 
   void upiPayment() async{
 
-    Get.to(UpiPayment());
+    Get.to(UpiPayment(phoneNumber, amountController.text));
 
 
 
