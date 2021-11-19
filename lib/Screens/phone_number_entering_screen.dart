@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class PhoneNumberEnteringScreen extends StatelessWidget {
    PhoneNumberEnteringScreen({Key? key}) : super(key: key);
 
-  var phoneController = TextEditingController();
+  var upiIdController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,18 +21,18 @@ class PhoneNumberEnteringScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextField(
-                  controller: phoneController,
+                  controller: upiIdController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Enter your UPI ID",
                   ),
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.text,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(onPressed: (){
 
-                    FirebaseFirestore.instance.collection("UserDetails").doc(FirebaseAuth.instance.currentUser!.uid).set({"phoneNumber": phoneController.text.toString()});
+                    FirebaseFirestore.instance.collection("UserDetails").doc(FirebaseAuth.instance.currentUser!.uid).set({"upiId": upiIdController.text.toString()});
                     Get.off(MyHomePage());
 
                   }, child: Text("Submit")),

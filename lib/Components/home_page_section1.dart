@@ -1,4 +1,5 @@
 import 'package:easyupi/Screens/amount_entering_screen.dart';
+import 'package:easyupi/Screens/scan_qr.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,9 @@ Row HomePageSection1() {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(QRViewExample());
+                },
                 icon: Icon(
                   FontAwesomeIcons.qrcode,
                   color: Colors.white,

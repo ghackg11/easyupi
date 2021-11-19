@@ -14,10 +14,16 @@ class ProfilePage extends StatelessWidget {
           future: FirebaseFirestore.instance.collection("UserDetails").doc(FirebaseAuth.instance.currentUser!.uid).get(),
           builder: (context, snapshot){
             if(snapshot.connectionState==ConnectionState.done){
-              return QrImage(
-                data: (snapshot.data as DocumentSnapshot)['phoneNumber'],
-                version: QrVersions.auto,
-                size: 200.0,
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  QrImage(
+                    data: (snapshot.data as DocumentSnapshot)['upiId'],
+                    version: QrVersions.auto,
+                    size: 200.0,
+                  ),
+                  Text('UPI id: ${(snapshot.data as DocumentSnapshot)['upiId']}')
+                ],
               );
             }
             return Center(child: CircularProgressIndicator());
