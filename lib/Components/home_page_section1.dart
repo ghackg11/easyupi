@@ -1,4 +1,5 @@
 import 'package:easyupi/Screens/amount_entering_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,7 +25,7 @@ Row HomePageSection1() {
           child: Column(
         children: [
           Text(
-            'Welcome Back, User',
+            'Welcome Back, ${FirebaseAuth.instance.currentUser!.displayName.toString()}',
             style: GoogleFonts.montserrat(color: Colors.white, fontSize: 40),
           ),
           SizedBox(

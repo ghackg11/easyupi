@@ -1,5 +1,8 @@
 import 'package:easyupi/DataController/recents_controller.dart';
+import 'package:easyupi/Screens/auth_screen.dart';
 import 'package:easyupi/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,7 +14,9 @@ import 'Components/home_page_section1.dart';
 import 'Components/home_page_section2.dart';
 import 'Components/home_page_section3.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.orange,
         ),
-        home: MyHomePage(),
+        home: FirebaseAuth.instance.currentUser==null? AuthScreen(): MyHomePage(),
       ),
     );
   }

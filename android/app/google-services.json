@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "859897106634",
+    "project_id": "easyupi-99f67",
+    "storage_bucket": "easyupi-99f67.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859897106634:android:b123b6fb95082be3726433",
+        "android_client_info": {
+          "package_name": "com.example.easyupi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "859897106634-9ohll00pq2cepgn2l2sf9lo3v7s7sc2b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM27pW0QnFHS-LhocyBtJob6DF-uYMn60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "859897106634-9ohll00pq2cepgn2l2sf9lo3v7s7sc2b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

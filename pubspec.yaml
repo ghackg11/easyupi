@@ -41,6 +41,10 @@ dependencies:
   contacts_service: ^0.6.3
   permission_handler:
   upi_pay:
+  firebase_core:
+  firebase_auth:
+  google_sign_in:
+  cloud_firestore:
 
 dev_dependencies:
   flutter_test:
