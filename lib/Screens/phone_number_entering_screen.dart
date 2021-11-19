@@ -24,7 +24,7 @@ class PhoneNumberEnteringScreen extends StatelessWidget {
                   controller: phoneController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: "Enter your UPI ID"
+                    hintText: "Enter your UPI ID",
                   ),
                   keyboardType: TextInputType.phone,
                 ),

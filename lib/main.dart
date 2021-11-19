@@ -1,5 +1,6 @@
 import 'package:easyupi/DataController/recents_controller.dart';
 import 'package:easyupi/Screens/auth_screen.dart';
+import 'package:easyupi/Screens/profile_page.dart';
 import 'package:easyupi/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -86,7 +87,9 @@ class MyHomePage extends StatelessWidget {
               tooltip: "History",
             ),
             IconButton(
-              onPressed: null,
+              onPressed: (){
+                Get.to(ProfilePage());
+              },
               icon: Icon(Icons.person, color: Colors.white),
               tooltip: "Account",
             ),
