@@ -3,9 +3,10 @@ import 'package:easyupi/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PhoneNumberEnteringScreen extends StatelessWidget {
-   PhoneNumberEnteringScreen({Key? key}) : super(key: key);
+  PhoneNumberEnteringScreen({Key? key}) : super(key: key);
 
   var upiIdController = TextEditingController();
 
@@ -30,12 +31,24 @@ class PhoneNumberEnteringScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(onPressed: (){
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        print(upiIdController.text.toString()); // TODO : Delete this
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setString("phoneNumber", upiIdController.text.toString());
 
-                    FirebaseFirestore.instance.collection("UserDetails").doc(FirebaseAuth.instance.currentUser!.uid).set({"upiId": upiIdController.text.toString()});
-                    Get.off(MyHomePage());
+                        FirebaseFirestore.instance
+                            .collection("User Data")
+                            .doc(upiIdController.text.toString())
+                            .set({
+                          'recipientName': FirebaseAuth.instance.currentUser!.displayName,
+                          'phoneNumber': upiIdController.text.toString(),
+                          'upiID': upiIdController.text.toString()
+                        });
 
-                  }, child: Text("Submit")),
+                        Get.off(MyHomePage());
+                      },
+                      child: Text("Submit")),
                 )
               ],
             ),

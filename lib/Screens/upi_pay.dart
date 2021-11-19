@@ -3,11 +3,12 @@ import 'package:easyupi/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:upi_pay/upi_pay.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 String? amount;
 
 class UpiPayment extends StatefulWidget {
-
   String phoneNumber;
   String amount;
   UpiPayment(this.phoneNumber, this.amount);
@@ -17,8 +18,6 @@ class UpiPayment extends StatefulWidget {
 }
 
 class _UpiPaymentState extends State<UpiPayment> {
-
-
   late Future<List<ApplicationMeta>> _appsFuture;
 
   @override
@@ -28,21 +27,41 @@ class _UpiPaymentState extends State<UpiPayment> {
     // we have declared amount as 999 (i.e. Rs.999).
 
     // used for getting list of UPI apps installed in current device
-    _appsFuture = UpiPay.getInstalledUpiApplications(statusType: UpiApplicationDiscoveryAppStatusType.all);
+    _appsFuture =
+        UpiPay.getInstalledUpiApplications(statusType: UpiApplicationDiscoveryAppStatusType.all);
   }
 
   @override
   void dispose() {
-
     // dispose text field controllers after use.
     super.dispose();
   }
 
   // this will open correspondence UPI Payment gateway app on which user has tapped.
   Future<void> _openUPIGateway(ApplicationMeta app) async {
+    final transactionRef = (1000000000 + Random.secure().nextInt(1 << 32)).toString();
+    print("Starting transaction with id $transactionRef"); // TODO: Remove this line upon release
 
-    final transactionRef = Random.secure().nextInt(1 << 32).toString();
-    print("Starting transaction with id $transactionRef");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    DocumentSnapshot snap =
+        await FirebaseFirestore.instance.collection("User Data").doc(widget.phoneNumber).get();
+
+    Map<String, dynamic> data = snap.data() as Map<String, dynamic>;
+
+    FirebaseFirestore.instance
+        .collection("User Data")
+        .doc(prefs.getString("phoneNumber"))
+        .collection("Transaction History")
+        .doc(transactionRef)
+        .set({
+      'recipientName': data["recipientName"],
+      'phoneNumber': widget.phoneNumber,
+      'transactionAmount': widget.amount,
+      'applicationUsed': app.upiApplication.appName,
+      'transactionID': transactionRef,
+      'dateTime': DateTime.now().toString()
+    });
 
     // this function will initiate UPI transaction.
     final a = await UpiPay.initiateTransaction(
@@ -62,70 +81,69 @@ class _UpiPaymentState extends State<UpiPayment> {
       backgroundColor: darkBlack,
       body: SafeArea(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: ListView(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: 32),
-                ),
-
-                Container(
-                  margin: EdgeInsets.only(top: 128, bottom: 32),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(bottom: 12),
-                        child: Text(
-                          'Pay Using',
-                          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 25),
-                        ),
-                      ),
-                      FutureBuilder<List<ApplicationMeta>>(
-                        future: _appsFuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState != ConnectionState.done) {
-                            return Container();
-                          }
-                          return GridView.count(
-                            crossAxisCount: 2,
-                            shrinkWrap: true,
-                            mainAxisSpacing: 8,
-                            crossAxisSpacing: 8,
-                            childAspectRatio: 1.6,
-                            physics: NeverScrollableScrollPhysics(),
-                            children: snapshot.data!.map((i) => Material(
-                              key: ObjectKey(i.upiApplication),
-                              color: Colors.grey[200]!.withOpacity(0.3),
-                              child: InkWell(
-                                onTap: () => _openUPIGateway(i),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    i.iconImage(20),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 4),
-                                      child: Text(
-                                        i.upiApplication.getAppName(),
-                                        style: GoogleFonts.montserrat(color: Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ))
-                                .toList(),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              ],
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: ListView(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 32),
             ),
-          )
-      ),
+            Container(
+              margin: EdgeInsets.only(top: 128, bottom: 32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      'Pay Using',
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 25),
+                    ),
+                  ),
+                  FutureBuilder<List<ApplicationMeta>>(
+                    future: _appsFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState != ConnectionState.done) {
+                        return Container();
+                      }
+                      return GridView.count(
+                        crossAxisCount: 2,
+                        shrinkWrap: true,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        childAspectRatio: 1.6,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: snapshot.data!
+                            .map((i) => Material(
+                                  key: ObjectKey(i.upiApplication),
+                                  color: Colors.grey[200]!.withOpacity(0.3),
+                                  child: InkWell(
+                                    onTap: () => _openUPIGateway(i),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        i.iconImage(20),
+                                        Container(
+                                          margin: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            i.upiApplication.getAppName(),
+                                            style: GoogleFonts.montserrat(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      )),
     );
   }
 }
@@ -134,7 +152,6 @@ String? _validateUpiAddress(String value) {
   if (value.isEmpty) {
     return 'UPI Address is required.';
   }
-
 
   return null;
 }

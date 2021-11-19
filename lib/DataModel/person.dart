@@ -1,4 +1,4 @@
-class Person{
+class Person {
   String pId;
   String pName;
   String? pImage;
@@ -6,5 +6,4 @@ class Person{
   String? phoneNum;
 
   Person(this.pId, this.pName, {this.pImage, this.upiId, this.phoneNum});
-
 }
