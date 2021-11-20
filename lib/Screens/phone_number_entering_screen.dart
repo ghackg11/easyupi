@@ -33,7 +33,6 @@ class PhoneNumberEnteringScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                       onPressed: () async {
-                        print(upiIdController.text.toString()); // TODO : Delete this
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         prefs.setString("phoneNumber", upiIdController.text.toString());
 

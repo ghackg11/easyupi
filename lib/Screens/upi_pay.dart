@@ -39,8 +39,8 @@ class _UpiPaymentState extends State<UpiPayment> {
 
   // this will open correspondence UPI Payment gateway app on which user has tapped.
   Future<void> _openUPIGateway(ApplicationMeta app) async {
-    final transactionRef = (1000000000 + Random.secure().nextInt(1 << 32)).toString();
-    print("Starting transaction with id $transactionRef"); // TODO: Remove this line upon release
+    final transactionRef =
+        (1000000000 + Random.secure().nextInt((1 << 32) - 1000000000)).toString();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -48,19 +48,19 @@ class _UpiPaymentState extends State<UpiPayment> {
         await FirebaseFirestore.instance.collection("User Data").doc(widget.phoneNumber).get();
 
     Map<String, dynamic> data = snap.data() as Map<String, dynamic>;
-
+    String dateTime = DateTime.now().toString();
     FirebaseFirestore.instance
         .collection("User Data")
         .doc(prefs.getString("phoneNumber"))
         .collection("Transaction History")
-        .doc(transactionRef)
+        .doc(dateTime)
         .set({
       'recipientName': data["recipientName"],
       'phoneNumber': widget.phoneNumber,
       'transactionAmount': widget.amount,
       'applicationUsed': app.upiApplication.appName,
       'transactionID': transactionRef,
-      'dateTime': DateTime.now().toString()
+      'dateTime': dateTime
     });
 
     // this function will initiate UPI transaction.
