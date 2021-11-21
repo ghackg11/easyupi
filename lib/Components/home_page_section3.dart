@@ -16,14 +16,10 @@ Future<List<Contact>?> _getContacts() async {
   if (permissionStatus == PermissionStatus.granted) {
     docs = await ContactsService.getContacts(withThumbnails: false);
     HashMap hashMap = HashMap<String, String>(); // To store Duplicate numbers
-    print("1"); // TODO: delete after debugging
-    for (int i = 0; i < docs.length; i++) {
-      if(docs[i].phones!.isNotEmpty) {
 
-        String s1 = docs[i].phones![0].value
-            .toString()
-            .replaceFirst("+91", '')
-            .removeAllWhitespace;
+    for (int i = 0; i < docs.length; i++) {
+      if (docs[i].phones!.isNotEmpty) {
+        String s1 = docs[i].phones![0].value.toString().replaceFirst("+91", '').removeAllWhitespace;
 
         if (s1.length < 10) continue;
         s1 = s1.substring(s1.length - 10);
@@ -31,12 +27,8 @@ Future<List<Contact>?> _getContacts() async {
         if (hashMap[s1] == null) {
           hashMap[s1] = '0';
         }
-
       }
     }
-    print("2"); // TODO: delete after debugging
-    print(hashMap); // TODO: delete after debugging
-
 
     QuerySnapshot qs = await FirebaseFirestore.instance.collection("User Data").get();
 
@@ -46,19 +38,17 @@ Future<List<Contact>?> _getContacts() async {
         hashMap[qs.docs[i]["phoneNumber"]] = qs.docs[i]["recipientName"];
       }
     }
-    print("3"); // TODO: delete after debugging
-
 
     for (int i = 0; i < docs.length; i++) {
-      if (docs[i].phones!.isNotEmpty && hashMap[docs[i].phones![0].value!.toString()] != "0") {
+      if (docs[i].phones!.isNotEmpty &&
+          hashMap.containsKey(docs[i].phones![0].value!.toString()) &&
+          hashMap[docs[i].phones![0].value!.toString()] != "0") {
         if (docs[i].displayName == null) {
           docs[i].displayName = hashMap[docs[i].phones![0].value!];
         }
         contacts.add(docs[i]);
-
       }
     }
-    print("4"); // TODO: delete after debugging
   }
 
   return contacts;
@@ -105,8 +95,8 @@ Row HomePageSection3() {
                     itemBuilder: (context, index) {
                       return ListTile(
                         onTap: () {
-                          if(docs[index].phones!.length>0)
-                          Get.to(AmountEnteringScreen(docs[index].phones![0].value.toString()));
+                          if (docs[index].phones!.length > 0)
+                            Get.to(AmountEnteringScreen(docs[index].phones![0].value.toString()));
                         },
                         title: Text(
                           '${docs[index].displayName}',
