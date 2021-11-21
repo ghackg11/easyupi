@@ -15,6 +15,7 @@ class TransactionHistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: lightBlack,
+      appBar: AppBar(title: Text('Transaction History'),),
       body: SafeArea(
         child: FutureBuilder(
           future: _getPrefs(),
