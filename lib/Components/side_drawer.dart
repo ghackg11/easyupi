@@ -72,7 +72,7 @@ Drawer SideDrawer(){
                             });
                           },
                           starBuilder: (index, color) => Icon(
-                            Icons.ac_unit_outlined,
+                            Icons.star,
                             color: color,
                           ),
                           starCount: 5,
