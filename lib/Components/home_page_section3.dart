@@ -17,14 +17,18 @@ Future<List<Contact>?> _getContacts() async {
     docs = await ContactsService.getContacts(withThumbnails: false);
 
     HashMap hashMap = HashMap<String, String>(); // To store Duplicate numbers
+    print("1"); // TODO: delete after debugging
     for (int i = 0; i < docs.length; i++) {
       String s1 = docs[i].phones![0].value.toString().replaceFirst("+91 ", '').removeAllWhitespace;
+      if (s1.length < 10) continue;
       s1 = s1.substring(s1.length - 10);
       docs[i].phones![0].value = s1;
       if (hashMap[s1] ?? true) {
         hashMap[s1] = '0';
       }
     }
+    print("2"); // TODO: delete after debugging
+    print(hashMap); // TODO: delete after debugging
 
     QuerySnapshot qs = await FirebaseFirestore.instance.collection("User Data").get();
 
@@ -34,6 +38,7 @@ Future<List<Contact>?> _getContacts() async {
         hashMap[qs.docs[i]["phoneNumber"]] = qs.docs[i]["recipientName"];
       }
     }
+    print("3"); // TODO: delete after debugging
 
     for (int i = 0; i < docs.length; i++) {
       if (hashMap[docs[i].phones![0].value!] != "0") {
@@ -43,6 +48,7 @@ Future<List<Contact>?> _getContacts() async {
         contacts.add(docs[i]);
       }
     }
+    print("4"); // TODO: delete after debugging
   }
 
   return contacts;
