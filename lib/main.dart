@@ -1,3 +1,4 @@
+import 'package:easyupi/Components/side_drawer.dart';
 import 'package:easyupi/DataController/recents_controller.dart';
 import 'package:easyupi/Screens/auth_screen.dart';
 import 'package:easyupi/Screens/profile_page.dart';
@@ -97,7 +98,7 @@ class MyHomePage extends StatelessWidget {
             ),
           ],
         ),
-        drawer: Drawer(),
+        drawer: SideDrawer(),
       ),
     );
   }
