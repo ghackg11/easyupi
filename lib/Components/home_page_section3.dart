@@ -16,29 +16,36 @@ Future<List<Contact>?> _getContacts() async {
   if (permissionStatus == PermissionStatus.granted) {
     docs = await ContactsService.getContacts(withThumbnails: false);
 
-    HashMap hashMap = HashMap<String, bool>(); // To store Duplicate numbers
+    HashMap hashMap = HashMap<String, String>(); // To store Duplicate numbers
     for (int i = 0; i < docs.length; i++) {
-      hashMap[docs[i].phones![0].value.toString()] = true;
+      String s1 = docs[i].phones![0].value.toString().replaceFirst("+91 ", '').removeAllWhitespace;
+      s1 = s1.substring(s1.length - 10);
+      docs[i].phones![0].value = s1;
+      if (hashMap[s1] ?? true) {
+        hashMap[s1] = '0';
+      }
     }
-    CollectionReference collRef = FirebaseFirestore.instance.collection("User Data");
 
-    for (String s in hashMap.keys) {
-      DocumentSnapshot snapshot =
-          await collRef.doc(s.replaceFirst("+91 ", '').removeAllWhitespace).get();
-      if (!snapshot.exists) {
-        hashMap[s] = false;
+    QuerySnapshot qs = await FirebaseFirestore.instance.collection("User Data").get();
+
+    for (int i = 0; i < qs.docs.length; i++) {
+      String s1 = hashMap[qs.docs[i]["phoneNumber"]] ?? "";
+      if (s1 == "0") {
+        hashMap[qs.docs[i]["phoneNumber"]] = qs.docs[i]["recipientName"];
       }
     }
 
     for (int i = 0; i < docs.length; i++) {
-      if (hashMap[docs[i].phones![0].value!] == true) {
+      if (hashMap[docs[i].phones![0].value!] != "0") {
+        if (docs[i].displayName == null) {
+          docs[i].displayName = hashMap[docs[i].phones![0].value!];
+        }
         contacts.add(docs[i]);
       }
     }
-
-    return contacts;
   }
-  return null;
+
+  return contacts;
 }
 
 Future<PermissionStatus> _getContactPermission() async {
