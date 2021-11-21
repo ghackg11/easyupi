@@ -1,28 +1,49 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:easyupi/Screens/amount_entering_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:collection';
 
 import '../constants.dart';
 
-Future<List<Contact>?> _askPermissions() async {
+Future<List<Contact>?> _getContacts() async {
   PermissionStatus permissionStatus = await _getContactPermission();
+  List<Contact> docs, contacts = [];
   if (permissionStatus == PermissionStatus.granted) {
-    return ContactsService.getContacts(withThumbnails: false);
-  }
+    docs = await ContactsService.getContacts(withThumbnails: false);
 
+    HashMap hashMap = HashMap<String, bool>(); // To store Duplicate numbers
+    for (int i = 0; i < docs.length; i++) {
+      hashMap[docs[i].phones![0].value.toString()] = true;
+    }
+    CollectionReference collRef = FirebaseFirestore.instance.collection("User Data");
+
+    for (String s in hashMap.keys) {
+      DocumentSnapshot snapshot =
+          await collRef.doc(s.replaceFirst("+91 ", '').removeAllWhitespace).get();
+      if (!snapshot.exists) {
+        hashMap[s] = false;
+      }
+    }
+
+    for (int i = 0; i < docs.length; i++) {
+      if (hashMap[docs[i].phones![0].value!] == true) {
+        contacts.add(docs[i]);
+      }
+    }
+
+    return contacts;
+  }
   return null;
 }
 
 Future<PermissionStatus> _getContactPermission() async {
   PermissionStatus permission = await Permission.contacts.status;
-  if (permission != PermissionStatus.granted &&
-      permission != PermissionStatus.permanentlyDenied) {
+  if (permission != PermissionStatus.granted && permission != PermissionStatus.permanentlyDenied) {
     PermissionStatus permissionStatus = await Permission.contacts.request();
     return permissionStatus;
   } else {
@@ -42,7 +63,7 @@ Row HomePageSection3() {
         padding: EdgeInsets.only(right: 5),
       ),
       Expanded(
-        child:Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -50,20 +71,23 @@ Row HomePageSection3() {
               style: GoogleFonts.montserrat(color: grey),
             ),
             FutureBuilder(
-              future: _askPermissions(),
-              builder: (context, snapshot){
-                if(snapshot.hasData){
+              future: _getContacts(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
                   var docs = snapshot.data as List<Contact>;
                   return ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: docs.length,
-                    itemBuilder: (context, index){
+                    itemBuilder: (context, index) {
                       return ListTile(
-                        onTap: (){
+                        onTap: () {
                           Get.to(AmountEnteringScreen(docs[index].phones![0].value.toString()));
                         },
-                        title: Text('${docs[index].displayName}', style: GoogleFonts.montserrat(color: Colors.white),),
+                        title: Text(
+                          '${docs[index].displayName}',
+                          style: GoogleFonts.montserrat(color: Colors.white),
+                        ),
                         leading: CircleAvatar(
                           child: Text(docs[index].displayName.toString()[0]),
                         ),
@@ -71,7 +95,7 @@ Row HomePageSection3() {
                     },
                   );
                 }
-                if(snapshot.hasError){
+                if (snapshot.hasError) {
                   return Center(child: Text('Some Error Occured ${snapshot.error.toString()}'));
                 }
                 return Center(child: CircularProgressIndicator());
