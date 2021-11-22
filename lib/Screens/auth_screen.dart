@@ -33,7 +33,7 @@ class AuthScreen extends StatelessWidget {
               // Once signed in, return the UserCredential
               await FirebaseAuth.instance.signInWithCredential(credential);
 
-              Get.off(PhoneNumberEnteringScreen());
+              Get.offAll(PhoneNumberEnteringScreen());
 
 
           },

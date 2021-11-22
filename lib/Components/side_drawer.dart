@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyupi/Screens/auth_screen.dart';
+import 'package:easyupi/Screens/faq_screen.dart';
 import 'package:easyupi/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,9 @@ Drawer SideDrawer(){
           ListTile(
             title: Text('FAQ', style: GoogleFonts.montserrat(color: Colors.white),),
             leading: Icon(LineIcons.question, color: Colors.white,),
+            onTap: (){
+              Get.to(FAQScreen());
+            },
           ),
           Divider(color: grey,),
           ListTile(
@@ -129,7 +133,7 @@ Drawer SideDrawer(){
             title: Text('Logout', style: GoogleFonts.montserrat(color: Colors.white),),
             onTap: (){
               FirebaseAuth.instance.signOut();
-              Get.off(AuthScreen());
+              Get.offAll(AuthScreen());
             },
           ),
           Divider(color: grey,),
