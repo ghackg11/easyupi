@@ -49,6 +49,7 @@ dependencies:
   qr_code_scanner: ^0.6.1
   shared_preferences: ^2.0.8
   flutter_rating_stars: ^1.0.3+4
+  feature_discovery: ^0.14.0
 
 dev_dependencies:
   flutter_test:

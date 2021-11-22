@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:easyupi/Screens/amount_entering_screen.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -79,9 +80,18 @@ Row HomePageSection3() {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Contacts',
-              style: GoogleFonts.montserrat(color: grey),
+            DescribedFeatureOverlay(
+              featureId: "feature3",
+              overflowMode: OverflowMode.extendBackground,
+              tapTarget: Text(
+                'Contacts',
+                style: GoogleFonts.montserrat(color: Colors.orange),
+              ),
+              title: Text("Select from Contacts"),
+              child: Text(
+                'Contacts',
+                style: GoogleFonts.montserrat(color: grey),
+              ),
             ),
             FutureBuilder(
               future: _getContacts(),

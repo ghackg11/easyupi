@@ -4,6 +4,7 @@ import 'package:easyupi/Screens/auth_screen.dart';
 import 'package:easyupi/Screens/profile_page.dart';
 import 'package:easyupi/Screens/transaction_history_page.dart';
 import 'package:easyupi/constants.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,19 +21,16 @@ import 'Components/home_page_section3.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp( MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-
-   MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     GetxController recentsController = Get.put(RecentsController());
-
 
     return GestureDetector(
       onTap: () {
@@ -49,20 +47,38 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.orange,
         ),
-        home: FirebaseAuth.instance.currentUser == null ? AuthScreen() : MyHomePage(),
+        home: FirebaseAuth.instance.currentUser == null
+            ? AuthScreen()
+            : FeatureDiscovery(child: MyHomePage()),
       ),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance!.addPostFrameCallback((Duration duration) {
+      FeatureDiscovery.discoverFeatures(
+        context,
+        const <String>{
+          // Feature ids for every feature that you want to showcase in order.
+          "feature1",
+          "feature2",
+          "feature3",
+          "feature4",
+          "feature5",
+          "feature6",
+          "feature7",
+        },
+      );
+    });
+
+    var scaffoldKey = GlobalKey<ScaffoldState>();
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: lightBlack,
         body: SafeArea(
           child: SingleChildScrollView(
@@ -88,24 +104,52 @@ class MyHomePage extends StatelessWidget {
           elevation: 0,
           backgroundColor: lightBlack,
           iconTheme: IconThemeData(color: Colors.white),
-          actions: [
-            IconButton(
+          leading: DescribedFeatureOverlay(
+            featureId: "feature7",
+            overflowMode: OverflowMode.extendBackground,
+            tapTarget: Icon(Icons.dehaze, color: Colors.orange),
+            onComplete: () async {
+              scaffoldKey.currentState?.openDrawer();
+              return true;
+            },
+            title: Text("Open Side Menu"),
+            child: IconButton(
               onPressed: () {
-                Get.to(TransactionHistoryPage());
+                scaffoldKey.currentState?.openDrawer();
               },
-              icon: Icon(LineIcons.history, color: Colors.white),
-              tooltip: "History",
+              icon: Icon(Icons.dehaze),
             ),
-            IconButton(
-              onPressed: () {
-                Get.to(ProfilePage());
-              },
-              icon: Icon(Icons.person, color: Colors.white),
-              tooltip: "Account",
+          ),
+          actions: [
+            DescribedFeatureOverlay(
+              featureId: "feature5",
+              overflowMode: OverflowMode.extendBackground,
+              tapTarget: Icon(LineIcons.history, color: Colors.orange),
+              title: Text("Check Transaction History"),
+              child: IconButton(
+                onPressed: () {
+                  Get.to(TransactionHistoryPage());
+                },
+                icon: Icon(LineIcons.history, color: Colors.white),
+                tooltip: "History",
+              ),
+            ),
+            DescribedFeatureOverlay(
+              featureId: "feature6",
+              overflowMode: OverflowMode.extendBackground,
+              tapTarget: Icon(Icons.person, color: Colors.orange),
+              title: Text("Check your profile"),
+              child: IconButton(
+                onPressed: () {
+                  Get.to(ProfilePage());
+                },
+                icon: Icon(Icons.person, color: Colors.white),
+                tooltip: "Account",
+              ),
             ),
           ],
         ),
-        drawer: SideDrawer(),
+        drawer: SideDrawer(context),
       ),
     );
   }

@@ -10,14 +10,12 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(child: Container(
-
-      child: Center(
-        child: ElevatedButton(
-          child: Text('SignIn'),
-          onPressed: () async{
-
-
+    return Material(
+      child: Container(
+        child: Center(
+          child: ElevatedButton(
+            child: const Text('SIGN IN'),
+            onPressed: () async {
               // Trigger the authentication flow
               final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -34,12 +32,10 @@ class AuthScreen extends StatelessWidget {
               await FirebaseAuth.instance.signInWithCredential(credential);
 
               Get.offAll(PhoneNumberEnteringScreen());
-
-
-          },
+            },
+          ),
         ),
       ),
-
-    ),);
+    );
   }
 }

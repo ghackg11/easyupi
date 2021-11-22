@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easyupi/main.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,7 +46,7 @@ class PhoneNumberEnteringScreen extends StatelessWidget {
                           'upiID': upiIdController.text.toString()
                         });
 
-                        Get.off(MyHomePage());
+                        Get.off(FeatureDiscovery(child: MyHomePage()));
                       },
                       child: Text("Submit")),
                 )
